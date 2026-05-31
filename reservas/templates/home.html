@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+
+<h1 style="text-align:center; margin-bottom:20px;">Bienvenido a CHECK‑GYM</h1>
+
+<p style="text-align:center; font-size:18px; margin-bottom:30px;">
+    Gestiona tus clases, reservas y horarios de forma sencilla.
+</p>
+
+<div style="text-align:center; margin-top:20px;">
+    <a href="{% url 'listar_horarios' %}" 
+       style="background:#007bff; color:white; padding:12px 20px; 
+              border-radius:6px; text-decoration:none; font-weight:bold;">
+        Ver horarios
+    </a>
+</div>
+
+{% endblock %}

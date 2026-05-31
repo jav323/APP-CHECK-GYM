@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Registro{% endblock %}
+
+{% block content %}
+
+<div class="card" style="
+    background:white;
+    width:380px;
+    padding:25px;
+    border-radius:10px;
+    margin:40px auto;
+    box-shadow:0 2px 10px rgba(0,0,0,0.15);
+">
+
+    <h2 style="text-align:center; margin-bottom:20px;">Crear cuenta</h2>
+
+    <!-- MENSAJES PROFESIONALES -->
+    {% if messages %}
+        <div style="text-align:center; margin-bottom:15px;">
+            {% for message in messages %}
+                
+                {% if message.tags == "success" %}
+                    <div style="
+                        background:#d4edda;
+                        color:#155724;
+                        border:1px solid #c3e6cb;
+                        padding:10px;
+                        margin:6px auto;
+                        border-radius:6px;
+                        font-weight:bold;
+                    ">
+                        {{ message }}
+                    </div>
+
+                {% elif message.tags == "error" %}
+                    <div style="
+                        background:#f8d7da;
+                        color:#721c24;
+                        border:1px solid #f5c6cb;
+                        padding:10px;
+                        margin:6px auto;
+                        border-radius:6px;
+                        font-weight:bold;
+                    ">
+                        {{ message }}
+                    </div>
+
+                {% else %}
+                    <div style="
+                        background:#e7f1ff;
+                        color:#004085;
+                        border:1px solid #b8daff;
+                        padding:10px;
+                        margin:6px auto;
+                        border-radius:6px;
+                        font-weight:bold;
+                    ">
+                        {{ message }}
+                    </div>
+
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- CONTROL TOTAL DEL FORMULARIO -->
+        <label>Usuario</label>
+        {{ form.username }}
+
+        <label>Contraseña</label>
+        {{ form.password1 }}
+
+        <label>Repetir contraseña</label>
+        {{ form.password2 }}
+
+        <button type="submit" class="btn" style="
+            width:100%;
+            background:#28a745;
+            color:white;
+            padding:10px;
+            border-radius:5px;
+            font-weight:bold;
+            border:none;
+            cursor:pointer;
+            margin-top:10px;
+        ">Registrarme</button>
+    </form>
+
+    <div class="link" style="text-align:center; margin-top:15px;">
+        ¿Ya tienes cuenta?
+        <a href="{% url 'login' %}" style="color:#007bff; text-decoration:none;">Inicia sesión</a>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}CHECK‑GYM{% endblock %}</title>
+
+    <!-- BLOQUE PARA CSS -->
+    {% block extra_css %}{% endblock %}
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: #007bff;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .navbar a, .navbar span {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        /* CONTENIDO */
+        .contenido {
+            padding: 25px;
+            flex: 1;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: #007bff;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            margin-top: 30px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+
+        <a href="{% url 'home' %}">Inicio</a>
+        <a href="{% url 'listar_horarios' %}">Horarios</a>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'mis_reservas' %}">Mis reservas</a>
+
+            <span>Hola, {{ user.username }}</span>
+
+            <a href="{% url 'logout' %}">Cerrar sesión</a>
+        {% else %}
+            <a href="{% url 'login' %}">Iniciar sesión</a>
+            <a href="{% url 'register' %}">Registrarse</a>
+        {% endif %}
+    </div>
+
+    <!-- CONTENIDO DE CADA PÁGINA -->
+    <div class="contenido">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        CHECK‑GYM © 2026 — Proyecto DAM · Javi
+    </div>
+
+    <!-- BLOQUE JS -->
+    {% block extra_js %}{% endblock %}
+
+</body>
+</html>

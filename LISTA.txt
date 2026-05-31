@@ -1,0 +1,7 @@
+PASOS DESDE EL INICIO:
+
+1-EMPEZAR POR EL BACKEND
+2-CREAR MODELOS EN DJANGO y pruebas
+3-PROBAMOS a traves de la URL
+4-Damos forma al front: añadimos los navbar,depuramos vista,estilo...todo lo que hemos hecho
+

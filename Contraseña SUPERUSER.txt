@@ -1,0 +1,3 @@
+USERNAME: admin
+Email: javi@example.com
+pass: javi1234
