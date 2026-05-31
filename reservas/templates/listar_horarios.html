@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<h1>Horarios disponibles</h1>
+<h1 style="text-align:center; margin-bottom:20px;">Horarios disponibles</h1>
 
 <!-- BLOQUE DE MENSAJES PROFESIONAL -->
 {% if messages %}
@@ -35,6 +35,7 @@
     </div>
 {% endif %}
 
+{% block extra_css %}
 <style>
     table {
         width: 80%;
@@ -56,37 +57,51 @@
     td {
         padding: 12px;
         border-bottom: 1px solid #ddd;
+        vertical-align: top;
     }
 
     tr:hover {
         background: #f0f8ff;
     }
 
-    .btn-reservar {
-        background: #28a745;
-        color: white;
-        padding: 8px 14px;
-        border-radius: 5px;
-        text-decoration: none;
-        font-weight: bold;
-        display: inline-block;
+    /* SCROLL HORIZONTAL DE USUARIOS */
+    .usuarios-scroll {
+        margin-top: 6px;
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        white-space: nowrap;
+        scrollbar-width: thin;
     }
 
-    .btn-reservar:hover {
-        background: #218838;
+    .usuario-pill {
+        background: #e7f1ff;
+        color: #004085;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: bold;
+        border: 1px solid #b8daff;
+        flex-shrink: 0;
     }
 
-    .btn-disabled {
-        background: #cccccc;
-        color: #666666;
-        padding: 8px 14px;
-        border-radius: 5px;
-        font-weight: bold;
-        display: inline-block;
-        cursor: not-allowed;
-        text-decoration: none;
+    .usuario-vacio {
+        background: #f0f0f0;
+        color: #666;
+        border-color: #ccc;
+    }
+
+    /* Scrollbar bonito en Chrome */
+    .usuarios-scroll::-webkit-scrollbar {
+        height: 6px;
+    }
+    .usuarios-scroll::-webkit-scrollbar-thumb {
+        background: #b8daff;
+        border-radius: 4px;
     }
 </style>
+{% endblock %}
 
 <table>
     <tr>
@@ -99,7 +114,24 @@
 
     {% for horario in horarios %}
     <tr>
-        <td>{{ horario.clase.nombre }}</td>
+
+        <!-- COLUMNA CLASE + USUARIOS CON SCROLL -->
+        <td>
+            <strong>{{ horario.clase.nombre }}</strong>
+
+            <div class="usuarios-scroll">
+                {% with reservas=horario.reserva_set.all %}
+                    {% if reservas %}
+                        {% for r in reservas %}
+                            <span class="usuario-pill">{{ r.usuario.username }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="usuario-pill usuario-vacio">Ninguno</span>
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </td>
+
         <td>{{ horario.dia|date:"d/m/Y" }}</td>
         <td>{{ horario.hora }}</td>
 
@@ -127,9 +159,12 @@
                 <span class="btn-disabled">Reservado</span>
 
             {% else %}
-                <a href="{% url 'reservar_clase' horario.id %}" class="btn-reservar">Reservar</a>
+                <a href="{% url 'reservar_clase' horario.id %}" class="btn-reservar">
+                    Reservar
+                </a>
             {% endif %}
         </td>
+
     </tr>
     {% endfor %}
 </table>

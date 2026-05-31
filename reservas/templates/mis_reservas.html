@@ -4,9 +4,9 @@
 
 {% block content %}
 
-<h1>Mis reservas</h1>
+<h1 style="text-align:center; margin-bottom:20px;">Mis reservas</h1>
 
-<!-- BLOQUE DE MENSAJES  -->
+<!-- BLOQUE DE MENSAJES -->
 {% if messages %}
     <div style="text-align:center; margin-bottom:20px;">
         {% for message in messages %}
@@ -76,6 +76,7 @@
     </div>
 {% endif %}
 
+{% block extra_css %}
 <style>
     table {
         width: 80%;
@@ -102,21 +103,8 @@
     tr:hover {
         background: #f0f8ff;
     }
-
-    .btn-cancelar {
-        background: #dc3545;
-        color: white;
-        padding: 8px 14px;
-        border-radius: 5px;
-        text-decoration: none;
-        font-weight: bold;
-        display: inline-block;
-    }
-
-    .btn-cancelar:hover {
-        background: #c82333;
-    }
 </style>
+{% endblock %}
 
 {% if reservas %}
 <table>
@@ -133,7 +121,9 @@
         <td>{{ reserva.horario.dia|date:"d/m/Y" }}</td>
         <td>{{ reserva.horario.hora }}</td>
         <td>
-            <a href="{% url 'cancelar_reserva' reserva.id %}" class="btn-cancelar">Cancelar</a>
+            <a href="{% url 'cancelar_reserva' reserva.id %}" class="btn-cancelar">
+                Cancelar
+            </a>
         </td>
     </tr>
     {% endfor %}

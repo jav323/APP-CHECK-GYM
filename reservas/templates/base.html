@@ -36,10 +36,36 @@
             text-decoration: none;
             font-weight: bold;
             font-size: 16px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            transition: 0.25s ease-in-out;
         }
 
         .navbar a:hover {
-            text-decoration: underline;
+            filter: brightness(1.15);
+        }
+
+        .navbar a:hover::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 250%;
+            height: 100%;
+            background: linear-gradient(
+                120deg,
+                rgba(255, 255, 150, 0.0) 0%,
+                rgba(255, 255, 150, 0.7) 50%,
+                rgba(255, 255, 150, 0.0) 100%
+            );
+            animation: shine 0.6s ease-out forwards;
+        }
+
+        @keyframes shine {
+            from { left: -120%; }
+            to { left: 120%; }
         }
 
         /* CONTENIDO */
@@ -57,28 +83,107 @@
             margin-top: 30px;
             font-size: 14px;
         }
+
+        /* BOTONES (los dejo tal cual los tenías) */
+        .btn-reservar {
+            background: #28a745;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            transition: 0.25s ease-in-out;
+        }
+
+        .btn-cancelar {
+            background: #dc3545;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            transition: 0.25s ease-in-out;
+        }
+
+        .btn-accion {
+            background: #007bff;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            transition: 0.25s ease-in-out;
+        }
+
+        .btn-disabled {
+            background: #cccccc;
+            color: #666666;
+            padding: 8px 14px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-block;
+            cursor: not-allowed;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: 0.25s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-reservar:hover,
+        .btn-cancelar:hover,
+        .btn-accion:hover {
+            filter: brightness(1.15);
+            transform: translateY(-2px);
+        }
+
+        .btn-reservar:hover::after,
+        .btn-cancelar:hover::after,
+        .btn-accion:hover::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 250%;
+            height: 100%;
+            background: linear-gradient(
+                120deg,
+                rgba(255, 255, 150, 0.0) 0%,
+                rgba(255, 255, 150, 0.7) 50%,
+                rgba(255, 255, 150, 0.0) 100%
+            );
+            animation: shine 0.6s ease-out forwards;
+        }
+
+        .btn-disabled:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 0 6px rgba(255, 230, 150, 0.4);
+        }
+
     </style>
 </head>
 
 <body>
 
-    <!-- NAVBAR -->
+    <!-- NAVBAR: SOLO SI ESTÁ AUTENTICADO -->
+    {% if user.is_authenticated %}
     <div class="navbar">
-
         <a href="{% url 'home' %}">Inicio</a>
         <a href="{% url 'listar_horarios' %}">Horarios</a>
-
-        {% if user.is_authenticated %}
-            <a href="{% url 'mis_reservas' %}">Mis reservas</a>
-
-            <span>Hola, {{ user.username }}</span>
-
-            <a href="{% url 'logout' %}">Cerrar sesión</a>
-        {% else %}
-            <a href="{% url 'login' %}">Iniciar sesión</a>
-            <a href="{% url 'register' %}">Registrarse</a>
-        {% endif %}
+        <a href="{% url 'mis_reservas' %}">Mis reservas</a>
+        <span>Hola, {{ user.username }}</span>
+        <a href="{% url 'logout' %}">Cerrar sesión</a>
     </div>
+    {% endif %}
 
     <!-- CONTENIDO DE CADA PÁGINA -->
     <div class="contenido">
