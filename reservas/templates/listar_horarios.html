@@ -37,7 +37,7 @@
                 <img src="{% static 'img/icons/boxeo.png' %}?v=2" alt="BOXEO_ICON_HORARIOS" class="icono-clase">
 
             {% elif horario.clase.nombre|lower == "yoga" %}
-                <!-- AQUÍ FORZAMOS yoga.png + ROMPEMOS CACHÉ + ALT CANTOSO -->
+                <!--  Forzar yoga.png  -->
                 <img src="{% static 'img/icons/yoga.png' %}?v=999" alt="YOGA_ICON_HORARIOS_TEST" class="icono-clase">
 
             {% else %}
