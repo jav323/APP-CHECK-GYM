@@ -6,197 +6,83 @@
 
     <title>{% block title %}CHECK‑GYM{% endblock %}</title>
 
-    <!-- BLOQUE PARA CSS -->
+    {% load static %}
+
+    <!-- CSS global -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
     {% block extra_css %}{% endblock %}
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* NAVBAR */
-        .navbar {
-            background: #007bff;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 25px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        }
-
-        .navbar a, .navbar span {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 16px;
-            padding: 6px 10px;
-            border-radius: 4px;
-            position: relative;
-            overflow: hidden;
-            transition: 0.25s ease-in-out;
-        }
-
-        .navbar a:hover {
-            filter: brightness(1.15);
-        }
-
-        .navbar a:hover::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -120%;
-            width: 250%;
-            height: 100%;
-            background: linear-gradient(
-                120deg,
-                rgba(255, 255, 150, 0.0) 0%,
-                rgba(255, 255, 150, 0.7) 50%,
-                rgba(255, 255, 150, 0.0) 100%
-            );
-            animation: shine 0.6s ease-out forwards;
-        }
-
-        @keyframes shine {
-            from { left: -120%; }
-            to { left: 120%; }
-        }
-
-        /* CONTENIDO */
-        .contenido {
-            padding: 25px;
-            flex: 1;
-        }
-
-        /* FOOTER */
-        .footer {
-            background: #007bff;
-            color: white;
-            text-align: center;
-            padding: 12px;
-            margin-top: 30px;
-            font-size: 14px;
-        }
-
-        /* BOTONES (los dejo tal cual los tenías) */
-        .btn-reservar {
-            background: #28a745;
-            color: white;
-            padding: 8px 14px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-            display: inline-block;
-            position: relative;
-            overflow: hidden;
-            transition: 0.25s ease-in-out;
-        }
-
-        .btn-cancelar {
-            background: #dc3545;
-            color: white;
-            padding: 8px 14px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-            display: inline-block;
-            position: relative;
-            overflow: hidden;
-            transition: 0.25s ease-in-out;
-        }
-
-        .btn-accion {
-            background: #007bff;
-            color: white;
-            padding: 8px 14px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-            display: inline-block;
-            position: relative;
-            overflow: hidden;
-            transition: 0.25s ease-in-out;
-        }
-
-        .btn-disabled {
-            background: #cccccc;
-            color: #666666;
-            padding: 8px 14px;
-            border-radius: 5px;
-            font-weight: bold;
-            display: inline-block;
-            cursor: not-allowed;
-            text-decoration: none;
-            opacity: 0.8;
-            transition: 0.25s ease-in-out;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-reservar:hover,
-        .btn-cancelar:hover,
-        .btn-accion:hover {
-            filter: brightness(1.15);
-            transform: translateY(-2px);
-        }
-
-        .btn-reservar:hover::after,
-        .btn-cancelar:hover::after,
-        .btn-accion:hover::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -120%;
-            width: 250%;
-            height: 100%;
-            background: linear-gradient(
-                120deg,
-                rgba(255, 255, 150, 0.0) 0%,
-                rgba(255, 255, 150, 0.7) 50%,
-                rgba(255, 255, 150, 0.0) 100%
-            );
-            animation: shine 0.6s ease-out forwards;
-        }
-
-        .btn-disabled:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 0 6px rgba(255, 230, 150, 0.4);
-        }
-
-    </style>
 </head>
 
 <body>
 
-    <!-- NAVBAR: SOLO SI ESTÁ AUTENTICADO -->
     {% if user.is_authenticated %}
     <div class="navbar">
-        <a href="{% url 'home' %}">Inicio</a>
-        <a href="{% url 'listar_horarios' %}">Horarios</a>
-        <a href="{% url 'mis_reservas' %}">Mis reservas</a>
-        <span>Hola, {{ user.username }}</span>
-        <a href="{% url 'logout' %}">Cerrar sesión</a>
+
+        <a href="{% url 'home' %}">🏠 Inicio</a>
+        <a href="{% url 'listar_horarios' %}">📅 Horarios</a>
+        <a href="{% url 'mis_reservas' %}">📘 Mis reservas</a>
+
+        <span>👤 Hola, {{ user.username }}</span>
+        <a href="{% url 'logout' %}">🚪 Cerrar sesión</a>
+
+        <!-- Clima -->
+        <span id="weather" style="margin-left:20px; font-size:15px; color:white;">
+            ⛅ Cargando clima...
+        </span>
+
+        <!-- Fecha y hora -->
+        <span id="datetime" style="font-size:15px; color:white;">
+            --
+        </span>
+
     </div>
     {% endif %}
 
-    <!-- CONTENIDO DE CADA PÁGINA -->
     <div class="contenido">
         {% block content %}{% endblock %}
     </div>
 
-    <!-- FOOTER -->
     <div class="footer">
         CHECK‑GYM © 2026 — Proyecto DAM · Javi
     </div>
 
-    <!-- BLOQUE JS -->
-    {% block extra_js %}{% endblock %}
+    {% block extra_js %}
+    <script>
+        // Fecha y hora
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', day: 'numeric', month: 'long' };
+            const date = now.toLocaleDateString('es-ES', options);
+            const time = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+            document.getElementById("datetime").textContent = `${date} — ${time}`;
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        // Clima
+        async function loadWeather() {
+            const apiKey = "591feff770afaaf8cbd2938f46e6bd0a";
+            const city = "Madrid";
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=es`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                const temp = Math.round(data.main.temp);
+                const icon = data.weather[0].icon;
+
+                document.getElementById("weather").innerHTML =
+                    `<img src="https://openweathermap.org/img/wn/${icon}.png" style="vertical-align:middle;"> ${temp}°C Madrid`;
+
+            } catch (error) {
+                document.getElementById("weather").textContent = "Clima no disponible";
+            }
+        }
+        loadWeather();
+    </script>
+    {% endblock %}
 
 </body>
 </html>
