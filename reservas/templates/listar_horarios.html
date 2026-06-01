@@ -1,137 +1,92 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Horarios{% endblock %}
 
 {% block content %}
 
-<h1>Horarios disponibles</h1>
+<h1 style="text-align:center; margin-bottom:25px;">Horarios disponibles</h1>
 
-<!-- BLOQUE DE MENSAJES PROFESIONAL -->
 {% if messages %}
     <div style="text-align:center; margin-bottom:20px;">
         {% for message in messages %}
-            {% if message.tags == "success" %}
-                <div style="background:#d4edda; color:#155724; border:1px solid #c3e6cb;
-                            padding:12px; margin:8px auto; width:60%; border-radius:6px;
-                            font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
-                    {{ message }}
-                </div>
-
-            {% elif message.tags == "error" %}
-                <div style="background:#f8d7da; color:#721c24; border:1px solid #f5c6cb;
-                            padding:12px; margin:8px auto; width:60%; border-radius:6px;
-                            font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
-                    {{ message }}
-                </div>
-
+            {% if message.tags == 'success' %}
+                <div class="msg-box msg-success">{{ message }}</div>
+            {% elif message.tags == 'error' %}
+                <div class="msg-box msg-error">{{ message }}</div>
             {% else %}
-                <div style="background:#e7f1ff; color:#004085; border:1px solid #b8daff;
-                            padding:12px; margin:8px auto; width:60%; border-radius:6px;
-                            font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
-                    {{ message }}
-                </div>
+                <div class="msg-box msg-info">{{ message }}</div>
             {% endif %}
         {% endfor %}
     </div>
 {% endif %}
 
-<style>
-    table {
-        width: 80%;
-        margin: 0 auto;
-        border-collapse: collapse;
-        background: white;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    th {
-        background: #007bff;
-        color: white;
-        padding: 12px;
-        text-align: left;
-    }
-
-    td {
-        padding: 12px;
-        border-bottom: 1px solid #ddd;
-    }
-
-    tr:hover {
-        background: #f0f8ff;
-    }
-
-    .btn-reservar {
-        background: #28a745;
-        color: white;
-        padding: 8px 14px;
-        border-radius: 5px;
-        text-decoration: none;
-        font-weight: bold;
-        display: inline-block;
-    }
-
-    .btn-reservar:hover {
-        background: #218838;
-    }
-
-    .btn-disabled {
-        background: #cccccc;
-        color: #666666;
-        padding: 8px 14px;
-        border-radius: 5px;
-        font-weight: bold;
-        display: inline-block;
-        cursor: not-allowed;
-        text-decoration: none;
-    }
-</style>
-
-<table>
-    <tr>
-        <th>Clase</th>
-        <th>Día</th>
-        <th>Hora</th>
-        <th>Aforo</th>
-        <th>Acción</th>
-    </tr>
+<div class="horarios-grid">
 
     {% for horario in horarios %}
-    <tr>
-        <td>{{ horario.clase.nombre }}</td>
-        <td>{{ horario.dia|date:"d/m/Y" }}</td>
-        <td>{{ horario.hora }}</td>
 
-        <td>
-            {% if horario.aforo_actual >= horario.clase.aforo_maximo %}
-                <span style="color:red; font-weight:bold;">
-                    {{ horario.aforo_actual }} / {{ horario.clase.aforo_maximo }}
-                </span>
-            {% elif horario.aforo_actual >= horario.clase.aforo_maximo|add:"-5" %}
-                <span style="color:orange; font-weight:bold;">
-                    {{ horario.aforo_actual }} / {{ horario.clase.aforo_maximo }}
-                </span>
+    <div class="horario-card">
+
+        <!-- ICONO SEGÚN TIPO DE CLASE -->
+        <div class="horario-icon">
+
+            {% if horario.clase.nombre|lower == "hiit" %}
+                <img src="{% static 'img/icons/elements1.png' %}?v=2" alt="HIIT_ICON_HORARIOS" class="icono-clase">
+
+            {% elif horario.clase.nombre|lower == "boxeo" %}
+                <img src="{% static 'img/icons/boxeo.png' %}?v=2" alt="BOXEO_ICON_HORARIOS" class="icono-clase">
+
+            {% elif horario.clase.nombre|lower == "yoga" %}
+                <!--  Forzar yoga.png  -->
+                <img src="{% static 'img/icons/yoga.png' %}?v=999" alt="YOGA_ICON_HORARIOS_TEST" class="icono-clase">
+
             {% else %}
-                <span style="color:green; font-weight:bold;">
-                    {{ horario.aforo_actual }} / {{ horario.clase.aforo_maximo }}
-                </span>
+                <img src="{% static 'img/icons/default.png' %}?v=2" alt="CLASE_ICON_HORARIOS" class="icono-clase">
             {% endif %}
-        </td>
 
-        <td>
+        </div>
+
+        <div class="horario-title">{{ horario.clase.nombre }}</div>
+
+        <div class="horario-info"><strong>Día:</strong> {{ horario.dia|date:"d/m/Y" }}</div>
+        <div class="horario-info"><strong>Hora:</strong> {{ horario.hora }}</div>
+
+        <div class="aforo">
+            {% if horario.aforo_actual >= horario.clase.aforo_maximo %}
+                <span style="color:red;">{{ horario.aforo_actual }} / {{ horario.clase.aforo_maximo }} — Completo</span>
+            {% elif horario.aforo_actual >= horario.clase.aforo_maximo|add:"-5" %}
+                <span style="color:orange;">{{ horario.aforo_actual }} / {{ horario.clase.aforo_maximo }} — Últimas plazas</span>
+            {% else %}
+                <span style="color:green;">{{ horario.aforo_actual }} / {{ horario.clase.aforo_maximo }} — Disponible</span>
+            {% endif %}
+        </div>
+
+        <div class="usuarios-scroll">
+            {% with reservas=horario.reserva_set.all %}
+                {% if reservas %}
+                    {% for r in reservas %}
+                        <span class="usuario-pill">{{ r.usuario.username }}</span>
+                    {% endfor %}
+                {% else %}
+                    <span class="usuario-pill usuario-vacio">Ninguno</span>
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <div style="margin-top:15px;">
             {% if horario.aforo_actual >= horario.clase.aforo_maximo %}
                 <span class="btn-disabled">Completo</span>
-
             {% elif horario.ya_reservado %}
                 <span class="btn-disabled">Reservado</span>
-
             {% else %}
                 <a href="{% url 'reservar_clase' horario.id %}" class="btn-reservar">Reservar</a>
             {% endif %}
-        </td>
-    </tr>
+        </div>
+
+    </div>
+
     {% endfor %}
-</table>
+
+</div>
 
 {% endblock %}

@@ -1,20 +1,23 @@
 from django.urls import path
+from django.contrib.auth.decorators import login_required
 from . import views
 
 urlpatterns = [
     # HOME
-    path("", views.home, name="home"),
+    path("", login_required(views.home), name="home"),
 
     # HORARIOS
-    path("horarios/", views.listar_horarios, name="listar_horarios"),
+    path("horarios/", login_required(views.listar_horarios), name="listar_horarios"),
 
-    # LOGIN / REGISTRO
+    # LOGIN / LOGOUT (NO SE PROTEGEN)
     path("login/", views.login_view, name="login"),
-    path("register/", views.register_view, name="register"),
     path("logout/", views.logout_view, name="logout"),
 
+    # RECUPERAR CONTRASEÑA (NO SE PROTEGE)
+    path("password-reset/", views.password_reset_view, name="password_reset"),
+
     # RESERVAS
-    path("reservar/<int:horario_id>/", views.reservar_clase, name="reservar_clase"),
-    path("mis-reservas/", views.mis_reservas, name="mis_reservas"),
-    path("cancelar/<int:reserva_id>/", views.cancelar_reserva, name="cancelar_reserva"),
+    path("reservar/<int:horario_id>/", login_required(views.reservar_clase), name="reservar_clase"),
+    path("mis-reservas/", login_required(views.mis_reservas), name="mis_reservas"),
+    path("cancelar/<int:reserva_id>/", login_required(views.cancelar_reserva), name="cancelar_reserva"),
 ]

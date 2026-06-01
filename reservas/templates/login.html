@@ -1,52 +1,72 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Iniciar sesión{% endblock %}
 
 {% block content %}
 
-<div class="card" style="
-    background:white;
-    width:350px;
-    padding:25px;
-    border-radius:10px;
-    margin:40px auto;
-    box-shadow:0 2px 10px rgba(0,0,0,0.15);
+<!-- Mensaje de bienvenida  -->
+<div style="text-align:center; margin-top:20px; margin-bottom:30px;">
+    <h2 style="
+        font-size:32px;
+        font-weight:600;
+        color:#222;
+        letter-spacing:1px;
+        text-shadow:0 1px 3px rgba(0,0,0,0.20);
+        margin-bottom:12px;
+    ">
+        Bienvenido a CHECK‑GYM
+    </h2>
+
+    <p style="
+        font-size:18px;
+        color:#444;
+        max-width:700px;
+        margin:0 auto;
+        line-height:1.6;
+    ">
+        Accede a tu zona personal para gestionar tus reservas, consultar tus clases
+        y mantener tus datos siempre actualizados.
+    </p>
+</div>
+
+<!-- Contenedor principal. imágenes laterales -->
+<div style="
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:60px; /* MÁS SEPARACIÓN */
+    margin-top:20px;
 ">
 
-    <h2 style="text-align:center; margin-bottom:20px;">Iniciar sesión</h2>
+    <!-- Imagen izquierda -->
+    <img src="{% static 'img/login_icon.png' %}"
+         alt="Icono login"
+         style="
+            width:330px; /* MÁS GRANDE */
+            opacity:0.95;
+            filter:drop-shadow(0 3px 8px rgba(0,0,0,0.25));
+         "
+         class="login-img">
 
-    <!-- MENSAJES PROFESIONALES -->
-    {% if messages %}
-        <div style="text-align:center; margin-bottom:15px;">
-            {% for message in messages %}
-                
-                {% if message.tags == "success" %}
-                    <div style="
-                        background:#d4edda;
-                        color:#155724;
-                        border:1px solid #c3e6cb;
-                        padding:10px;
-                        margin:6px auto;
-                        border-radius:6px;
-                        font-weight:bold;
-                    ">
-                        {{ message }}
-                    </div>
+    <!-- Tarjeta del login -->
+    <div class="card" style="
+        background:white;
+        width:380px;
+        padding:30px;
+        border-radius:14px;
+        box-shadow:0 3px 14px rgba(0,0,0,0.18);
+    ">
 
-                {% elif message.tags == "error" %}
-                    <div style="
-                        background:#f8d7da;
-                        color:#721c24;
-                        border:1px solid #f5c6cb;
-                        padding:10px;
-                        margin:6px auto;
-                        border-radius:6px;
-                        font-weight:bold;
-                    ">
-                        {{ message }}
-                    </div>
+        <h2 style="text-align:center; margin-bottom:12px;">Iniciar sesión</h2>
 
-                {% else %}
+        <p style="text-align:center; color:#555; margin-bottom:20px; font-size:15px;">
+            Acceso exclusivo para clientes registrados por el gimnasio.
+        </p>
+
+        {% if messages %}
+            <div style="text-align:center; margin-bottom:15px;">
+                {% for message in messages %}
                     <div style="
                         background:#e7f1ff;
                         color:#004085;
@@ -58,40 +78,56 @@
                     ">
                         {{ message }}
                     </div>
+                {% endfor %}
+            </div>
+        {% endif %}
 
-                {% endif %}
-            {% endfor %}
-        </div>
-    {% endif %}
+        <form method="post">
+            {% csrf_token %}
 
-    <form method="post">
-        {% csrf_token %}
+            <div style="margin-bottom:12px;">
+                {{ form.username }}
+            </div>
 
-        <!-- CONTROL TOTAL DEL FORMULARIO -->
-        <label>Usuario</label>
-        {{ form.username }}
+            <div style="margin-bottom:12px;">
+                {{ form.password }}
+            </div>
 
-        <label>Contraseña</label>
-        {{ form.password }}
+            <button type="submit" class="btn-accion" style="width:100%; margin-top:10px;">
+                Entrar
+            </button>
 
-        <button type="submit" class="btn" style="
-            width:100%;
-            background:#007bff;
-            color:white;
-            padding:10px;
-            border-radius:5px;
-            font-weight:bold;
-            border:none;
-            cursor:pointer;
-            margin-top:10px;
-        ">Entrar</button>
-    </form>
+            <div style="text-align:center; margin-top:12px;">
+                <a href="{% url 'password_reset' %}"
+                   style="display:inline-block; padding:6px 10px; margin-top:12px;
+                          color:#007bff; text-decoration:none; border-radius:4px;">
+                    ¿Olvidaste tu contraseña?
+                </a>
+            </div>
 
-    <div class="link" style="text-align:center; margin-top:15px;">
-        ¿No tienes cuenta?
-        <a href="{% url 'register' %}" style="color:#007bff; text-decoration:none;">Regístrate aquí</a>
+        </form>
+
     </div>
 
+    <!-- Imagen derecha -->
+    <img src="{% static 'img/login_icon.png' %}"
+         alt="Icono login"
+         style="
+            width:330px; /* MÁS GRANDE */
+            opacity:0.95;
+            filter:drop-shadow(0 3px 8px rgba(0,0,0,0.25));
+         "
+         class="login-img">
+
 </div>
+
+<!-- Responsive -->
+<style>
+@media (max-width: 900px) {
+    .login-img {
+        display: none;
+    }
+}
+</style>
 
 {% endblock %}

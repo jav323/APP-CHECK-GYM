@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Inicio{% endblock %}
 
@@ -11,11 +12,16 @@
 </p>
 
 <div style="text-align:center; margin-top:20px;">
-    <a href="{% url 'listar_horarios' %}" 
-       style="background:#007bff; color:white; padding:12px 20px; 
-              border-radius:6px; text-decoration:none; font-weight:bold;">
+    <a href="{% url 'listar_horarios' %}" class="btn-accion">
         Ver horarios
     </a>
+</div>
+
+<!-- IMAGEN DEBAJO DEL BOTÓN -->
+<div style="text-align:center; margin-top:30px;">
+    <img src="{% static 'img/home_banner.png' %}"
+         alt="Imagen CHECK-GYM"
+         style="width:70%; max-width:800px; border-radius:12px; box-shadow:0 3px 12px rgba(0,0,0,0.25);">
 </div>
 
 {% endblock %}

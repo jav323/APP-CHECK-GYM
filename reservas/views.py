@@ -3,24 +3,29 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+import random
+import string
 
+from .forms import LoginForm
 from .models import Horario, Reserva
 
 
 # -----------------------------
-# HOME
+# HOME (PROTEGIDA)
 # -----------------------------
+@login_required
 def home(request):
     return render(request, "home.html")
 
 
 # -----------------------------
-# LOGIN / REGISTRO / LOGOUT
+# LOGIN / LOGOUT
 # -----------------------------
 def login_view(request):
     if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
+        form = LoginForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
@@ -28,24 +33,9 @@ def login_view(request):
         else:
             messages.error(request, "Usuario o contraseña incorrectos.")
     else:
-        form = AuthenticationForm()
+        form = LoginForm()
 
     return render(request, "login.html", {"form": form})
-
-
-def register_view(request):
-    if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Cuenta creada correctamente. Ahora puedes iniciar sesión.")
-            return redirect("login")
-        else:
-            messages.error(request, "Revisa los datos introducidos.")
-    else:
-        form = UserCreationForm()
-
-    return render(request, "register.html", {"form": form})
 
 
 def logout_view(request):
@@ -54,18 +44,47 @@ def logout_view(request):
 
 
 # -----------------------------
+# RECUPERAR CONTRASEÑA
+# -----------------------------
+def password_reset_view(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            messages.error(request, "No existe ningún usuario con ese email.")
+            return redirect("password_reset")
+
+        # Generar nueva contraseña aleatoria
+        nueva_pass = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+        user.set_password(nueva_pass)
+        user.save()
+
+        # Enviar email con la nueva contraseña
+        send_mail(
+            subject="Recuperación de contraseña - CHECK GYM",
+            message=f"Tu nueva contraseña es: {nueva_pass}",
+            from_email="noreply@gym.com",
+            recipient_list=[email],
+            fail_silently=False,
+        )
+
+        messages.success(request, "Se ha enviado una nueva contraseña a tu email.")
+        return redirect("login")
+
+    return render(request, "password_reset.html")
+
+
+# -----------------------------
 # FUNCIONALIDAD DEL GIMNASIO
 # -----------------------------
+@login_required
 def listar_horarios(request):
     horarios = Horario.objects.all().order_by("dia", "hora")
 
-    # Añadimos un atributo booleano a cada horario
-    if request.user.is_authenticated:
-        for h in horarios:
-            h.ya_reservado = h.reserva_set.filter(usuario=request.user).exists()
-    else:
-        for h in horarios:
-            h.ya_reservado = False
+    for h in horarios:
+        h.ya_reservado = h.reserva_set.filter(usuario=request.user).exists()
 
     return render(request, "listar_horarios.html", {"horarios": horarios})
 
