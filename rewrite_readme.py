@@ -1,4 +1,7 @@
-# CHECK‑GYM
+from pathlib import Path
+
+path = Path('reservas/readme.md')
+content = '''# CHECK‑GYM
 
 CHECK‑GYM es una aplicación web desarrollada como proyecto de TFG para el ciclo de Desarrollo de Aplicaciones Multiplataforma. Su objetivo es digitalizar la gestión de un gimnasio y permitir que los usuarios puedan consultar horarios, reservar clases y gestionar sus reservas de manera sencilla. La idea principal es sustituir procesos manuales por un sistema claro, ordenado y accesible tanto para usuarios como para administradores.
 
@@ -21,7 +24,7 @@ Para ejecutar el proyecto en local, se deben seguir estos pasos:
 - Crear un entorno virtual:
   `python -m venv entorno_virtual`
 - Activarlo en Windows:
-  `entorno_virtual\Scripts\activate`
+  `entorno_virtual\\Scripts\\activate`
 - Instalar dependencias:
   `pip install -r requirements.txt`
 - Ejecutar el servidor:
@@ -86,3 +89,6 @@ El proyecto está finalizado y preparado para su entrega como TFG. Incluye todas
 
 Javi — 2º DAM
 Proyecto TFG 2026
+'''
+path.write_text(content, encoding='utf-8')
+print('README actualizado con formato Markdown.')
