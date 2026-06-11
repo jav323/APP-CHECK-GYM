@@ -52,12 +52,12 @@
         <div class="horario-info"><strong>Hora:</strong> {{ horario.hora }}</div>
 
         <div class="aforo">
-            {% if horario.aforo_actual >= horario.clase.aforo_maximo %}
-                <span style="color:red;">{{ horario.aforo_actual }} / {{ horario.clase.aforo_maximo }} — Completo</span>
-            {% elif horario.aforo_actual >= horario.clase.aforo_maximo|add:"-5" %}
-                <span style="color:orange;">{{ horario.aforo_actual }} / {{ horario.clase.aforo_maximo }} — Últimas plazas</span>
+            {% if horario.aforo_ocupado >= horario.clase.aforo_maximo %}
+                <span style="color:red;">{{ horario.aforo_ocupado }} / {{ horario.clase.aforo_maximo }} — Completo</span>
+            {% elif horario.aforo_ocupado >= horario.clase.aforo_maximo|add:"-5" %}
+                <span style="color:orange;">{{ horario.aforo_ocupado }} / {{ horario.clase.aforo_maximo }} — Últimas plazas</span>
             {% else %}
-                <span style="color:green;">{{ horario.aforo_actual }} / {{ horario.clase.aforo_maximo }} — Disponible</span>
+                <span style="color:green;">{{ horario.aforo_ocupado }} / {{ horario.clase.aforo_maximo }} — Disponible</span>
             {% endif %}
         </div>
 
@@ -74,7 +74,7 @@
         </div>
 
         <div style="margin-top:15px;">
-            {% if horario.aforo_actual >= horario.clase.aforo_maximo %}
+            {% if horario.aforo_ocupado >= horario.clase.aforo_maximo %}
                 <span class="btn-disabled">Completo</span>
             {% elif horario.ya_reservado %}
                 <span class="btn-disabled">Reservado</span>
