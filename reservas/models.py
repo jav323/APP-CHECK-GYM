@@ -24,6 +24,18 @@ class Horario(models.Model):
     def __str__(self):
         return f"{self.clase.nombre} - {self.dia} {self.hora}"
 
+    @property
+    def aforo_ocupado(self):
+        return self.reserva_set.count()
+
+    @property
+    def aforo_disponible(self):
+        return max(self.clase.aforo_maximo - self.aforo_ocupado, 0)
+
+    def actualizar_aforo_actual(self):
+        self.aforo_actual = self.aforo_ocupado
+        self.save(update_fields=["aforo_actual"])
+
 
 class Reserva(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -42,19 +54,17 @@ class Reserva(models.Model):
         if not self.usuario.is_active:
             raise ValidationError("No puedes reservar porque tu membresía no está activa.")
 
-        if self.horario.aforo_actual >= self.horario.clase.aforo_maximo:
+        if self.horario.aforo_ocupado >= self.horario.clase.aforo_maximo:
             raise ValidationError("No quedan plazas disponibles para esta clase.")
 
     def save(self, *args, **kwargs):
         self.clean()
-        self.horario.aforo_actual += 1
-        self.horario.save()
         super().save(*args, **kwargs)
+        self.horario.actualizar_aforo_actual()
 
     def cancelar(self):
-        self.horario.aforo_actual -= 1
-        self.horario.save()
         self.delete()
+        self.horario.actualizar_aforo_actual()
 
     def __str__(self):
         return f"{self.usuario.username} → {self.horario}"
